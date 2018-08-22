@@ -1,0 +1,27 @@
+{
+  "name": "zene",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CWolfAnderson/zene.git"
+  },
+  "author": "Christoph Anderson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CWolfAnderson/zene/issues"
+  },
+  "homepage": "https://github.com/CWolfAnderson/zene#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "concurrently": "^3.6.0",
+    "express": "^4.16.3"
+  }
+}
