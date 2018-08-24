@@ -39,14 +39,13 @@ const dates = importedDataSet
     if (!acc.includes(row.MonthBooked)) acc.push(row.MonthBooked);
     return acc;
   }, [])
-  .sort();
+  // .sort();
 
 console.log('dates', dates);
 
 const usersData = importedDataSet
   .map(data => data.Users);
 
-const randColor1 = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 export default class Home extends Component {
 
   state = {
@@ -85,15 +84,15 @@ export default class Home extends Component {
   }
 
   updateResults = () => {
-    const { accountsChosen, countriesChosen, importedDataSet } = this.state;
+    const { accountsChosen, countriesChosen, graphData, importedDataSet } = this.state;
 
     const results = [];
     // TODO: update the `importedDataSet` to be one large object for O(1) look up time
-    for (let account of accountsChosen) {
+    accountsChosen.forEach((account) => {
       // console.log('account', account);
       const { Account, ConsumerGroup, PromotionCode } = account;
-      for (let Country of countriesChosen) {
-        for (let row of importedDataSet) {
+      countriesChosen.forEach((Country) => {
+        importedDataSet.forEach((row) => {
           /* console.log('row', row);
           console.log('Account', Account);
           console.log('ConsumerGroup', ConsumerGroup);
@@ -104,12 +103,60 @@ export default class Home extends Component {
             && row.ConsumerGroup === ConsumerGroup
             && row.Account === Account) {
               results.push(row);
-              break;
           }
+        });
+      });
+    }); 
+    console.log('results', results);
+    const datasets = [];
+    results.forEach((res) => {
+      const uid = `${res.Account} ${res.ConsumerGroup} ${res.PromotionCode} ${res.Country}`;
+      let found = false;
+      for (let set of datasets) {
+        if (set.uid === uid) {
+          found = true;
+          break;
         }
       }
-    } 
-    console.log('results', results);
+
+      if (!found) {
+        const data = new Array(dates.length + 1).join('0').split('').map(parseFloat);
+        const index = dates.indexOf(res.MonthBooked);
+        const randColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        data[index] = res.Users; // TODO: change this from users to a state variable
+        const uid = `${res.Account} ${res.ConsumerGroup} ${res.PromotionCode} ${res.Country}`;
+        datasets.push({
+          uid,
+          label: `${res.Country} - ${res.Account} (${res.ConsumerGroup}, ${res.PromotionCode})`,
+          fill: false,
+          lineTension: 0.1,
+          backgroundColor: randColor,
+          borderColor: randColor,
+          borderCapStyle: 'butt',
+          borderDash: [],
+          borderDashOffset: 0.0,
+          borderJoinStyle: 'miter',
+          pointBorderColor: randColor,
+          pointBackgroundColor: '#fff',
+          pointBorderWidth: 1,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: randColor,
+          pointHoverBorderColor: randColor,
+          pointHoverBorderWidth: 2,
+          pointRadius: 1,
+          pointHitRadius: 10,
+          data,
+        });
+      } else {
+        const index = dates.indexOf(res.MonthBooked);
+        datasets[datasets.length-1].data[index] = res.Users;
+      }
+
+      console.log('datasets', datasets);
+      graphData.datasets = datasets;
+      this.setState({ graphData });
+    });
+
   }
 
   handleUpdateAccountsChosen = (e) => {
@@ -135,8 +182,6 @@ export default class Home extends Component {
 
   render() {
     const { accountsChosen, importedDataSet, graphData } = this.state;
-
-    graphData.datasets = importedDataSet
 
     return (
       <div>
