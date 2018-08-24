@@ -2,17 +2,14 @@ import React from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/lib/animated';
 
-import './ToolBar.scss';
-
-const ToolBar = ({ accountOptions, dataOptions, dataSet, updateAccountsChosen, updateCountriesChosen, updateDataChosen }) => {
-
-  const countryOptions = dataSet
-    .reduce((acc, row) => {
-      if (!acc.includes(row.Country)) acc.push(row.Country);
-      return acc;
-    }, [])
-    .sort()
-    .map(country => ({ label: country, value: country }));
+const ToolBar = ({
+  accountOptions,
+  countryOptions,
+  dataOptions,
+  updateAccountsChosen,
+  updateCountriesChosen,
+  updateDataChosen
+  }) => {
 
   return (
     <div className="row">
@@ -21,6 +18,7 @@ const ToolBar = ({ accountOptions, dataOptions, dataSet, updateAccountsChosen, u
         <Select
           closeMenuOnSelect={false}
           components={makeAnimated()}
+          defaultValue={[accountOptions[0], accountOptions[6]]}
           isMulti
           onChange={updateAccountsChosen}
           options={accountOptions}
@@ -32,6 +30,7 @@ const ToolBar = ({ accountOptions, dataOptions, dataSet, updateAccountsChosen, u
         <Select
           closeMenuOnSelect={false}
           components={makeAnimated()}
+          defaultValue={[countryOptions[23]]}
           isMulti
           onChange={updateCountriesChosen}
           options={countryOptions}
