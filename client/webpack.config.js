@@ -72,10 +72,10 @@ module.exports = {
       },
     ],
   },
+  node: {
+    fs: 'empty',
+  },
   resolve: {
-		alias: {
-			'react-redux': path.join(__dirname, '/node_modules/react-redux/dist/react-redux.min'),
-		},
     extensions: ['.js', '.jsx'],
   },
   output: {
