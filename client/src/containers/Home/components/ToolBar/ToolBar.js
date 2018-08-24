@@ -4,9 +4,6 @@ import makeAnimated from 'react-select/lib/animated';
 
 import './ToolBar.scss';
 
-// const accountOptions = ['Spotify (Free)', 'Spotify (Paid)', 'Apple Music (Free)', 'Apple Music (Paid)']
-  // .map(account => ({ label: account, value: account }));
-
 const ToolBar = ({ accountOptions, dataOptions, dataSet, updateAccountsChosen, updateCountriesChosen, updateDataChosen }) => {
 
   const countryOptions = dataSet
