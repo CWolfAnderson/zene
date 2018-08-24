@@ -7,6 +7,11 @@ import './Home.scss';
 
 import importedDataSet from '../../assets/dataset.json';
 
+/*
+TODOs:
+Handle clearing filters
+*/
+
 const accountOptions = importedDataSet
   .reduce((acc, row) => {
     const accountOption = `${row.Account} (${row.ConsumerGroup}, ${row.PromotionCode})`;
@@ -39,46 +44,22 @@ const dates = importedDataSet
     if (!acc.includes(row.MonthBooked)) acc.push(row.MonthBooked);
     return acc;
   }, [])
-  // .sort();
+  // .sort(); // TODO: make sure dates are sorted properly
 
 console.log('dates', dates);
 
-const usersData = importedDataSet
-  .map(data => data.Users);
+const dataOptions = ['Users', 'Revenue', 'Streams']
+  .map(data => ({ label: data, value: data }));
 
 export default class Home extends Component {
 
   state = {
     accountsChosen: [],
     countriesChosen: [],
-    dataChosen: [],
+    dataChosen: dataOptions.map(option => option.label),
     graphData: {
+      datasets: [],
       labels: dates,
-      datasets: [
-        /* {
-          label: 'Users, Revenue, or Streams',
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: 'rgba(75,192,192,0.4)',
-          borderColor: 'rgba(75,192,192,1)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: 'rgba(75,192,192,1)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-          pointHoverBorderColor: 'rgba(220,220,220,1)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: [65, 59, 80, 81, 56, 55, 40],
-          // data: [[65, 59, 80, 81, 56, 55, 40], [34, 23, 12, 53, 34, 23, 12]],
-          // data: [], // TODO: update this with appropriate data
-        }, */
-      ],
     },
     importedDataSet,
   }
@@ -160,40 +141,68 @@ export default class Home extends Component {
   }
 
   handleUpdateAccountsChosen = (e) => {
-    console.log('e', e);
+    // console.log('e', e);
     let { accountsChosen } = this.state;
     accountsChosen = e.map(account => account.data);
     this.setState({ accountsChosen }, this.updateResults);
   }
 
   handleUpdateCountriesChosen = (e) => {
-    console.log('e', e);
+    // console.log('e', e);
     let { countriesChosen } = this.state;
     countriesChosen = e.map(country => country.value);
     this.setState({ countriesChosen }, this.updateResults);
   }
 
   handleUpdateDataChosen = (e) => {
-    console.log('e', e);
+    // console.log('e', e);
     let { dataChosen } = this.state;
     dataChosen = e.map(data => data.value);
     this.setState({ dataChosen }, this.updateResults);
   }
 
   render() {
-    const { accountsChosen, importedDataSet, graphData } = this.state;
+    const { dataChosen, importedDataSet, graphData } = this.state;
 
     return (
-      <div>
+      <div className="container">
         <ToolBar
           accountOptions={accountOptions}
-          // accountsChosen={accountsChosen}
+          dataOptions={dataOptions}
           dataSet={importedDataSet}
           updateAccountsChosen={this.handleUpdateAccountsChosen}
           updateCountriesChosen={this.handleUpdateCountriesChosen}
           updateDataChosen={this.handleUpdateDataChosen}
         />
-        <Line data={graphData} />
+        <div
+          style={{
+            width: '1000px',
+          }}
+        >
+          {dataChosen.map((dataDisplayed) => {
+            return (
+              <Line
+                data={graphData}
+                key={dataDisplayed}
+                options={{
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        // max: this.props.maxY,
+                        min: 0,
+                        // stepSize: 3
+                      }
+                    }]
+                  },
+                  title: {
+                    display: true,
+                    text: dataDisplayed,
+                  },
+                }}
+              />
+            );
+          })}
+        </div>
       </div>
     );
   }

@@ -7,10 +7,7 @@ import './ToolBar.scss';
 // const accountOptions = ['Spotify (Free)', 'Spotify (Paid)', 'Apple Music (Free)', 'Apple Music (Paid)']
   // .map(account => ({ label: account, value: account }));
 
-const dataOptions = ['Users', 'Revenue', 'Streams']
-  .map(data => ({ label: data, value: data }));
-
-const ToolBar = ({ accountOptions, dataSet, updateAccountsChosen, updateCountriesChosen, updateDataChosen }) => {
+const ToolBar = ({ accountOptions, dataOptions, dataSet, updateAccountsChosen, updateCountriesChosen, updateDataChosen }) => {
 
   const countryOptions = dataSet
     .reduce((acc, row) => {
@@ -21,8 +18,8 @@ const ToolBar = ({ accountOptions, dataSet, updateAccountsChosen, updateCountrie
     .map(country => ({ label: country, value: country }));
 
   return (
-    <div>
-      <div style={{ width: '800px' }}>
+    <div className="row">
+      <div className="col">
         Account:
         <Select
           closeMenuOnSelect={false}
@@ -33,7 +30,7 @@ const ToolBar = ({ accountOptions, dataSet, updateAccountsChosen, updateCountrie
           placeholder="Select Account(s)"
         />
       </div>
-      <div style={{ width: '800px' }}>
+      <div className="col">
         Countries:
         <Select
           closeMenuOnSelect={false}
@@ -44,11 +41,12 @@ const ToolBar = ({ accountOptions, dataSet, updateAccountsChosen, updateCountrie
           placeholder="Select Countries"
         />
       </div>
-      <div style={{ width: '800px' }}>
+      <div className="col">
         Data:
         <Select
           closeMenuOnSelect={false}
           components={makeAnimated()}
+          defaultValue={[...dataOptions]}
           isMulti
           onChange={updateDataChosen}
           options={dataOptions}
